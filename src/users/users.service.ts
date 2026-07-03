@@ -7,10 +7,13 @@ import { User } from './users.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  create(email: string, passwordHash: string) {
+  create(storedUser: Partial<User>, passwordHash: string) {
     const createdAt = new Date().toJSON();
+    storedUser.isActive = true;
+    storedUser.createdAt = createdAt;
+    storedUser.updatedAt = createdAt;
 
-    const user = this.repo.create({ email, passwordHash, createdAt });
+    const user = this.repo.create(storedUser);
 
     return this.repo.save(user);
   }
@@ -19,7 +22,7 @@ export class UsersService {
     return this.repo.findOne({ where: { id } });
   }
 
-  find(email: string) {
+  find(email: string | undefined) {
     return this.repo.find({ where: { email } });
   }
 

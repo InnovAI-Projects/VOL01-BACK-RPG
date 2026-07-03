@@ -11,6 +11,7 @@ import { Character } from './characters/characters.entity';
 import { User } from './users/users.entity';
 import { Campaign } from './campaigns/campaigns.entity';
 import { HealthModule } from './health/health.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { HealthModule } from './health/health.module';
     UsersModule,
     CampaignsModule,
     HealthModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

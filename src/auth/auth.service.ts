@@ -6,6 +6,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
+import { User } from '../users/users.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -13,8 +14,8 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async signup(email: string, password) {
-    const users = await this.usersService.find(email);
+  async signup(storedUser: Partial<User>, password: string) {
+    const users = await this.usersService.find(storedUser.email);
     if (users.length) {
       throw new BadRequestException('email in use');
     }
@@ -25,7 +26,7 @@ export class AuthService {
 
     const result = salt + '.' + hash.toString('hex');
 
-    const user = await this.usersService.create(email, result);
+    const user = await this.usersService.create(storedUser, result);
 
     return user;
   }

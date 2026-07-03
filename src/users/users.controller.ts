@@ -8,7 +8,7 @@ export class UsersController {
 
   @Post()
   async createTemporaryUser(@Body() body: CreateUserDto) {
-    const user = await this.usersService.create(body.email, '');
+    const user = await this.usersService.create(body, '');
     return user;
   }
 
