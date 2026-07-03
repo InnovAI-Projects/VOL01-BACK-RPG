@@ -18,8 +18,8 @@ export class User {
   isActive: boolean;
 
   @Column()
-  createdAt: Date;
+  createdAt: string;
 
   @Column()
-  updatedAt: Date;
+  updatedAt: string;
 }

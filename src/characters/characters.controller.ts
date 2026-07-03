@@ -8,6 +8,6 @@ export class CharactersController {
 
   @Get()
   getAllCharacters() {
-    return this.charactersService.getAll();
+    return 'Hello'; //this.charactersService.getAll();
   }
 }

@@ -3,7 +3,8 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  ManyToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { User } from '../users/users.entity';
@@ -14,11 +15,19 @@ export class Character {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.id)
+  @Column()
   userId: number;
 
-  @ManyToMany((type) => Campaign, (campaign) => campaign.id)
+  @ManyToOne((type) => User)
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @Column()
   campaignId: number;
+
+  @OneToOne((type) => Campaign)
+  @JoinColumn({ name: 'campaignId' })
+  campaign: Campaign;
 
   @Column()
   name: string;
@@ -45,8 +54,8 @@ export class Character {
   isActive: boolean;
 
   @Column()
-  createdAt: Date;
+  createdAt: string;
 
   @Column()
-  updatedAt: Date;
+  updatedAt: string;
 }

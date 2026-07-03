@@ -1,12 +1,23 @@
-import { PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Entity,
+} from 'typeorm';
 import { User } from '../users/users.entity';
 
+@Entity()
 export class Campaign {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.id)
+  @Column()
   userId: number;
+
+  @ManyToOne((type) => User)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column()
   name: string;
@@ -21,8 +32,8 @@ export class Campaign {
   isActive: boolean;
 
   @Column()
-  createdAt: Date;
+  createdAt: string;
 
   @Column()
-  updatedAt: Date;
+  updatedAt: string;
 }
