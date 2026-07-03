@@ -9,6 +9,7 @@ export class UsersService {
 
   create(storedUser: Partial<User>, passwordHash: string) {
     const createdAt = new Date().toJSON();
+    storedUser.passwordHash = passwordHash;
     storedUser.isActive = true;
     storedUser.createdAt = createdAt;
     storedUser.updatedAt = createdAt;
