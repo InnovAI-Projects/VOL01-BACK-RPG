@@ -1,3 +1,1 @@
-const created = new Date().toJSON();
-
-console.log(created);
+console.log(process.env.PORT);

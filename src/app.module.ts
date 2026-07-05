@@ -6,6 +6,7 @@ import { CharactersModule } from './characters/characters.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
+import { ConfigModule } from '@nestjs/config';
 
 import { Character } from './characters/characters.entity';
 import { User } from './users/users.entity';
@@ -15,6 +16,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
       database: 'db.prototype',
