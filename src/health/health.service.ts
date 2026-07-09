@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HealthCheckService, TypeOrmHealthIndicator } from '@nestjs/terminus';
-
-interface HealthResponse {
-  status: string;
-  database: string;
-  timestamp: string;
-}
+import { HealthResponse } from './interfaces/health-response.interface';
 
 @Injectable()
 export class HealthService {
@@ -14,7 +9,7 @@ export class HealthService {
     private db: TypeOrmHealthIndicator,
   ) {}
 
-  async healthCheck() {
+  async healthCheck(): Promise<HealthResponse> {
     const json = await this.health.check([
       () => this.db.pingCheck('db.prototype'),
     ]);
