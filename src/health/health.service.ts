@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { HealthCheckService, TypeOrmHealthIndicator } from '@nestjs/terminus';
 import { HealthResponse } from './interfaces/health-response.interface';
 
@@ -14,6 +14,9 @@ export class HealthService {
       () => this.db.pingCheck('db.prototype'),
     ]);
     const timestamp = new Date().toJSON();
+    if (json.status === 'error') {
+      throw new InternalServerErrorException('database could not be connected');
+    }
     return {
       status: json.status,
       database: json.info?.['db.prototype']?.status,

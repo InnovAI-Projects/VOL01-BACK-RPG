@@ -1,11 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from '../auth/auth.service';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    @Inject(forwardRef(() => AuthService))
+    private authService: AuthService,
+  ) {}
 
   create(storedUser: Partial<User>, passwordHash: string) {
     const createdAt = new Date().toJSON();
@@ -32,6 +42,11 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
+    if (attrs.passwordHash) {
+      attrs.passwordHash = await this.authService.updatePassword(
+        attrs.passwordHash,
+      );
+    }
     Object.assign(user, attrs);
     user.updatedAt = new Date().toJSON();
     return this.repo.save(user);
@@ -42,6 +57,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
-    return this.repo.remove(user);
+    user.isActive = false;
+    return this.repo.save(user);
   }
 }
