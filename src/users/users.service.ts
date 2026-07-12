@@ -11,11 +11,7 @@ import { User } from './users.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private repo: Repository<User>,
-    @Inject(forwardRef(() => AuthService))
-    private authService: AuthService,
-  ) {}
+  constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   create(storedUser: Partial<User>, passwordHash: string) {
     const createdAt = new Date().toJSON();
@@ -42,11 +38,11 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('user not found');
     }
-    if (attrs.passwordHash) {
-      attrs.passwordHash = await this.authService.updatePassword(
-        attrs.passwordHash,
-      );
-    }
+    // if (attrs.passwordHash) {
+    //   attrs.passwordHash = await this.authService.updatePassword(
+    //     attrs.passwordHash,
+    //   );
+    // }
     Object.assign(user, attrs);
     user.updatedAt = new Date().toJSON();
     return this.repo.save(user);
