@@ -11,15 +11,18 @@ import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 import { User } from '../users/users.entity';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
+import refreshJwtConfig from './config/refresh-jwt.config';
+import { type ConfigType } from '@nestjs/config';
 
 const scrypt = promisify(_scrypt);
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     private jwtService: JwtService,
+    @Inject(refreshJwtConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -68,9 +71,15 @@ export class AuthService {
     }
 
     const payload: AuthJwtPayload = { sub: user.id, username: user.name };
+
     const token = await this.jwtService.signAsync(payload);
 
-    return { access_token: await this.jwtService.signAsync(payload) };
+    const refreshToken = await this.jwtService.signAsync(
+      payload,
+      this.refreshTokenConfig,
+    );
+
+    return { token, refreshToken };
   }
 
   async updatePassword(password: string) {
@@ -81,5 +90,13 @@ export class AuthService {
     const result = salt + '.' + hash.toString('hex');
 
     return result;
+  }
+
+  async refreshToken(userId: number, username: string) {
+    const payload: AuthJwtPayload = { sub: userId, username: username };
+    const token = await this.jwtService.signAsync(payload);
+    return {
+      token,
+    };
   }
 }
