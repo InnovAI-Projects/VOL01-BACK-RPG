@@ -8,32 +8,37 @@ import {
   Param,
   Query,
   NotFoundException,
+  UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 @Serialize(UserDto)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @HttpCode(201)
   @Post()
-  async createTemporaryUser(@Body() body: CreateUserDto) {
+  async createVisitor(@Body() body: CreateUserDto) {
     const user = await this.usersService.create(body, '');
     return user;
   }
 
   @Get()
-  async findAllUsers(@Query('email') email: string) {
-    const users = await this.usersService.find(email);
+  async findAllUsers(@Query('page') page: number) {
+    return this.usersService.findAll(page ?? 1);
   }
 
   @Get('/:id')
   async findUser(@Param('id') id: string) {
-    const user = this.usersService.findOne(parseInt(id));
+    const user = await this.usersService.findOne(parseInt(id));
     if (!user) {
       throw new NotFoundException('user not found');
     }
@@ -45,6 +50,7 @@ export class UsersController {
     return this.usersService.update(parseInt(id), body);
   }
 
+  @HttpCode(204)
   @Delete('/:id')
   async deleteUserById(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));

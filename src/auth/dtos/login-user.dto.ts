@@ -6,5 +6,5 @@ export class LoginUserDto {
 
   @IsString()
   @MinLength(6)
-  passwordHash: string;
+  password: string;
 }

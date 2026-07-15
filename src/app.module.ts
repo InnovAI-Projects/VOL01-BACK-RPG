@@ -13,6 +13,7 @@ import { User } from './users/users.entity';
 import { Campaign } from './campaigns/campaigns.entity';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
+import { ObjectsService } from './objects/objects.service';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ObjectsService],
 })
 export class AppModule {}

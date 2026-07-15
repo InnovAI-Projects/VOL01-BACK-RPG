@@ -8,7 +8,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from './dtos/register-user.dto';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { AuthService } from './auth.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
@@ -21,16 +21,16 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/register')
-  @Serialize(UserDto)
   async createUser(@Body() body: CreateUserDto) {
-    const user = await this.authService.signUp(body, body.passwordHash);
+    const user = await this.authService.signUp(body, body.password);
+    console.log(user);
     return user;
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async loginUser(@Body() body: LoginUserDto) {
-    return this.authService.signIn(body.email, body.passwordHash);
+    return await this.authService.signIn(body.email, body.password);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -42,6 +42,10 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   refreshToken(@Request() req) {
-    return this.authService.refreshToken(req.user.id, req.user.username);
+    return this.authService.refreshToken(
+      req.user.id,
+      req.user.name,
+      req.user.email,
+    );
   }
 }
