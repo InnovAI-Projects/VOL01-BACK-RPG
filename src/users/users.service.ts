@@ -32,11 +32,16 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  findOne(id: number) {
-    return this.repo.findOne({ where: { id } });
+  async findOne(id: number) {
+    const user = await this.repo.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return user;
   }
 
-  find(email: string | undefined) {
+  // function is not being used
+  find(email: string) {
     return this.repo.find({ where: { email } });
   }
 
@@ -56,9 +61,7 @@ export class UsersService {
 
   async update(id: number, attrs: Partial<User>) {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException('user not found');
-    }
+
     if (attrs.passwordHash) {
       attrs.passwordHash = await this.authService.updatePassword(
         attrs.passwordHash,
@@ -75,6 +78,8 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
     user.isActive = false;
+    this.objectsService.updateVar(user);
+
     this.repo.save(user);
   }
 }

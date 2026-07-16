@@ -10,6 +10,7 @@ import {
   NotFoundException,
   UseGuards,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -24,7 +25,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @HttpCode(201)
+  @HttpCode(HttpStatus.OK)
   @Post()
   async createVisitor(@Body() body: CreateUserDto) {
     const user = await this.usersService.create(body, '');
@@ -50,7 +51,7 @@ export class UsersController {
     return this.usersService.update(parseInt(id), body);
   }
 
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
   async deleteUserById(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));

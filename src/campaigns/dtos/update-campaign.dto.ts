@@ -1,6 +1,6 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 
-export class CreateCampaignDto {
+export class UpdateCampaignDto {
   @IsString()
   @IsOptional()
   name: string;

@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async signUp(storedUser: Partial<User>, password: string) {
-    const [users] = await this.usersService.find(storedUser.email);
+    const [users] = await this.usersService.find(storedUser.email!);
 
     if (users) {
       if (!users.isActive) {
