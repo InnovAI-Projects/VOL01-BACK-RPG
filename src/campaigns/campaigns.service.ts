@@ -28,6 +28,9 @@ export class CampaignsService {
   }
 
   async findAll(pageNumber: number): Promise<Campaign[]> {
+    if (pageNumber <= 0) {
+      throw new BadRequestException('index out of range');
+    }
     const campaigns = await this.repo.find({
       take: 20,
       skip: (pageNumber - 1) * 20,
