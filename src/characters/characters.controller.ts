@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Body,
+  Param,
 } from '@nestjs/common';
 import { CharactersService } from './characters.service';
 import { CreateCharacterDto } from './dtos/create-character.dto';
@@ -24,6 +25,11 @@ export class CharactersController {
 
   @Get()
   getAllCharactersFromUser(@Req() req) {
-    return this.charactersService.findAll(req.id);
+    return this.charactersService.findAll(req.user.id);
+  }
+
+  @Get('/:id')
+  getCharacterById(@Param('id') id: number, @Req() req) {
+    return this.charactersService.findById(id, req.user.id);
   }
 }

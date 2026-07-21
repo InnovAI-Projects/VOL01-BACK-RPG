@@ -25,7 +25,7 @@ export class Character {
   @Column()
   campaignId: number;
 
-  @OneToOne((type) => Campaign)
+  @ManyToOne((type) => Campaign)
   @JoinColumn({ name: 'campaignId' })
   campaign: Campaign;
 

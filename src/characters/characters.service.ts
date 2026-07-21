@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Character } from './characters.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,6 +27,20 @@ export class CharactersService {
 
   findAll(userId: number) {
     return this.repo.find({ where: { userId: userId } });
+  }
+
+  async findById(id: number, userId: number) {
+    const char = await this.repo.findOne({ where: { id: id } });
+
+    if (!char) {
+      throw new NotFoundException('character not found');
+    }
+
+    if (char.userId !== userId) {
+      throw new ForbiddenException('character does not belong to this user');
+    }
+
+    return char;
   }
 
   async instantiateCharacter(char: Partial<Character>, userId: number) {
