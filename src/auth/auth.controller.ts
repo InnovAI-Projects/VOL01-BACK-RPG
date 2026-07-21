@@ -8,7 +8,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/register-user.dto';
+import { RegisterUserDto } from './dtos/register-user.dto';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { AuthService } from './auth.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
@@ -21,7 +21,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/register')
-  async createUser(@Body() body: CreateUserDto) {
+  async createUser(@Body() body: RegisterUserDto) {
     const user = await this.authService.signUp(body, body.password);
     console.log(user);
     return user;

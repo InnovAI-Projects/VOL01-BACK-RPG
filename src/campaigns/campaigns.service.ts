@@ -28,6 +28,9 @@ export class CampaignsService {
   }
 
   async findAll(pageNumber: number): Promise<Campaign[]> {
+    if (pageNumber <= 0) {
+      throw new BadRequestException('index out of range');
+    }
     const campaigns = await this.repo.find({
       take: 20,
       skip: (pageNumber - 1) * 20,
@@ -40,10 +43,13 @@ export class CampaignsService {
 
   async findById(id: number, userId: number): Promise<Campaign> {
     const campaign = await this.repo.findOne({
-      where: { id: id, userId: userId },
+      where: { id: id },
     });
     if (!campaign) {
       throw new NotFoundException('campaign not found');
+    }
+    if (campaign.userId !== userId) {
+      throw new ForbiddenException('campaign does not belong to this user');
     }
     return campaign;
   }

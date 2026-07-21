@@ -9,12 +9,14 @@ import {
   UseGuards,
   Req,
   Param,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CampaignsService } from './campaigns.service';
 import { CreateCampaignDto } from './dtos/create-campaign.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { UpdateCampaignDto } from './dtos/update-campaign.dto';
-import { MinLength } from 'class-validator';
+import { IsNumber } from 'class-validator';
 import { FindCampaingsDto } from './dtos/find-campaingns.dto';
 import { dot } from 'node:test/reporters';
 
@@ -47,6 +49,7 @@ export class CampaignsController {
     return this.campaignService.update(body, id, req.user.id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
   removeCampaign(@Param('id') id: number, @Req() req) {
     return this.campaignService.remove(id, req.user.id);
