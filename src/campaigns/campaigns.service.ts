@@ -43,10 +43,13 @@ export class CampaignsService {
 
   async findById(id: number, userId: number): Promise<Campaign> {
     const campaign = await this.repo.findOne({
-      where: { id: id, userId: userId },
+      where: { id: id },
     });
     if (!campaign) {
       throw new NotFoundException('campaign not found');
+    }
+    if (campaign.userId !== userId) {
+      throw new ForbiddenException('campaign does not belong to this user');
     }
     return campaign;
   }

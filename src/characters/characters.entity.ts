@@ -47,7 +47,7 @@ export class Character {
   @Column()
   maxHp: number;
 
-  @Column()
+  @Column({ nullable: true })
   avatarUrl: string;
 
   @Column()

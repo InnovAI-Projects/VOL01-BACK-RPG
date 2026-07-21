@@ -10,5 +10,6 @@ import { ConfigModule } from '@nestjs/config';
   imports: [TypeOrmModule.forFeature([Campaign])],
   controllers: [CampaignsController],
   providers: [CampaignsService, ObjectsService],
+  exports: [CampaignsService],
 })
 export class CampaignsModule {}
