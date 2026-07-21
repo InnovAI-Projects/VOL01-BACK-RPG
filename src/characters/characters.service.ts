@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Character } from './characters.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,6 +42,34 @@ export class CharactersService {
     }
 
     return char;
+  }
+
+  async update(id: number, userId: number, attrs: Partial<Character>) {
+    const char = await this.findById(id, userId);
+
+    if (!char.isActive) {
+      throw new ForbiddenException('Character was deleted');
+    }
+
+    Object.assign(char, attrs);
+
+    this.objectsService.updateVar(char);
+
+    return this.repo.save(char);
+  }
+
+  async remove(id: number, userId: number) {
+    const char = await this.findById(id, userId);
+
+    if (!char.isActive) {
+      throw new BadRequestException('Character was already deleted');
+    }
+
+    char.isActive = false;
+
+    this.objectsService.updateVar(char);
+
+    this.repo.save(char);
   }
 
   async instantiateCharacter(char: Partial<Character>, userId: number) {

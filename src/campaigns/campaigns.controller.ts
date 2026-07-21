@@ -9,6 +9,8 @@ import {
   UseGuards,
   Req,
   Param,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CampaignsService } from './campaigns.service';
 import { CreateCampaignDto } from './dtos/create-campaign.dto';
@@ -47,6 +49,7 @@ export class CampaignsController {
     return this.campaignService.update(body, id, req.user.id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
   removeCampaign(@Param('id') id: number, @Req() req) {
     return this.campaignService.remove(id, req.user.id);
