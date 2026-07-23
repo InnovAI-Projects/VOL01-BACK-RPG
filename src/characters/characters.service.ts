@@ -75,10 +75,13 @@ export class CharactersService {
   async instantiateCharacter(char: Partial<Character>, userId: number) {
     char.hp = char.maxHp;
     char.userId = userId;
-    char.campaignId = await this.campaignsService
-      .findById(char.campaignId!, userId)
-      .then((x) => x.id);
-
     return char;
+  }
+
+  async checkIfCampaignIsActive(campaignId, userId) {
+    const camp = await this.campaignsService.findById(campaignId, userId);
+    if (!camp.isActive) {
+      throw new ForbiddenException('campaign was deleted');
+    }
   }
 }

@@ -15,12 +15,14 @@ import { CharactersService } from './characters.service';
 import { CreateCharacterDto } from './dtos/create-character.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { UpdateCharacterDto } from './dtos/update-character.dto';
+import { ActiveCampaignGuard } from './guards/active-campaign/active-campaign.guard';
 
 @Controller('characters')
 @UseGuards(JwtAuthGuard)
 export class CharactersController {
   constructor(private charactersService: CharactersService) {}
 
+  @UseGuards(ActiveCampaignGuard)
   @Post()
   createCharacter(@Req() req, @Body() body: CreateCharacterDto) {
     return this.charactersService.create(body, req.user.id);
@@ -48,6 +50,6 @@ export class CharactersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
   removeCharacterById(@Param('id') id: number, @Req() req) {
-    this.charactersService.remove(id, req.user.id);
+    return this.charactersService.remove(id, req.user.id);
   }
 }
